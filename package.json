@@ -1,10 +1,11 @@
 {
   "name": "tp-link-tapo-connect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JS Library for connecting to TP-Link Tapo devices",
-  "main": "src/api.js",
-  "types": "src/types.d.ts",
+  "main": "dist/api.js",
+  "types": "dist/api.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "jest --watchAll"
   },
   "author": "",
