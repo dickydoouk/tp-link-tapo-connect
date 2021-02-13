@@ -4,6 +4,7 @@ import type { TapoDeviceKey } from './types';
 
 const RSA_CIPHER_ALGORITHM = 'rsa'
 const AES_CIPHER_ALGORITHM = 'aes-128-cbc'
+const PASSPHRASE = "top secret"
 
 export const generateKeyPair = async () => {
     const RSA_OPTIONS = {
@@ -16,7 +17,7 @@ export const generateKeyPair = async () => {
             type: 'pkcs1',
             format: 'pem',
             cipher: 'aes-256-cbc',
-            passphrase: ''
+            passphrase: PASSPHRASE
         }
     }
     const generateKeyPair = util.promisify(crypto.generateKeyPair);
@@ -39,7 +40,8 @@ export const readDeviceKey = (pemKey: string, privateKey: KeyObject) : Buffer =>
     const keyBytes = Buffer.from(pemKey, 'base64');
     const deviceKey = crypto.privateDecrypt({
         key: privateKey,
-        padding:crypto.constants.RSA_PKCS1_PADDING
+        padding:crypto.constants.RSA_PKCS1_PADDING,
+        passphrase: PASSPHRASE,
     }, keyBytes);
     
     return deviceKey;
