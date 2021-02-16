@@ -21,7 +21,9 @@ const devices = await listDevicesByType(cloudToken, 'SMART.TAPOPLUG');
 Once you have determined which device you wish to use. You can enquire of its current state using:
 
 ```ts
-const deviceToken = await loginDeviceByIp(email, password, deviceIp);
+const deviceToken = await loginDevice(email, password, devices[0]); // Performs a mac lookup to determine local IP address
+// OR
+const deviceToken = await loginDeviceByIp(email, password, deviceIp); // If you know your local device IP address
     
 const getDeviceInfoResponse = await getDeviceInfo(deviceToken);
 console.log(getDeviceInfoResponse);
