@@ -77,10 +77,10 @@ export const handshake = async (deviceIp: string):Promise<TapoDeviceKey> => {
   }
 }
 
-export const loginDevice = async (email: string, password: string, device: TapoDevice) => 
+export const loginDevice = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, device: TapoDevice) => 
   loginDeviceByIp(email, password, await resolveMacToIp(device.deviceMac));
 
-export const loginDeviceByIp = async (email: string, password: string, deviceIp: string):Promise<TapoDeviceKey> => {
+export const loginDeviceByIp = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, deviceIp: string):Promise<TapoDeviceKey> => {
   const deviceKey = await handshake(deviceIp);
   const loginDeviceRequest = 
     {
