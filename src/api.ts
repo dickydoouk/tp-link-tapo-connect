@@ -5,7 +5,7 @@ import { resolveMacToIp } from './network-tools';
 
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
 
-export const cloudLogin = async (email: string, password: string): Promise<string> => {
+export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined): Promise<string> => {
   const loginRequest = {
     "method": "login",
     "params": {
