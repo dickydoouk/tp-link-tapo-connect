@@ -125,14 +125,17 @@ export const turnOn = async (deviceKey: TapoDeviceKey, deviceOn: boolean = true)
     const {
       brightness,
       saturation,
-      hue
+      hue,
+      colour_temp
     } = await getColour(colour);
     const setBrightnessRequest = {
       "method": "set_device_info",
-      "params":{
+      "params": colour.startsWith('#') ? {
         brightness,
         saturation,
         hue
+      } : { 
+        colour_temp
       }
     }
     await securePassthrough(setBrightnessRequest, deviceKey)
