@@ -53,17 +53,12 @@ export const hexToHsl = (hex: string) => {
     h /= 6;
   }
 
-  s = s*100;
+  s = s * 100;
   s = Math.round(s);
-  l = l*100;
+  l = l * 100;
   l = Math.round(l);
-  h = Math.round(360*h);
+  h = Math.round(360 * h);
 
-  console.log({
-    hue: h,
-    saturation: s,
-    brightness: l
-  });
   return {
     hue: h,
     saturation: s,
