@@ -98,64 +98,53 @@ export const loginDeviceByIp = async (email: string = process.env.TAPO_USERNAME 
 }
 
 export const turnOn = async (deviceKey: TapoDeviceKey, deviceOn: boolean = true) => {
-    const turnDeviceOnRequest = {
-      "method": "set_device_info",
-      "params":{
-        "device_on": deviceOn,
-      }
+  const turnDeviceOnRequest = {
+    "method": "set_device_info",
+    "params":{
+      "device_on": deviceOn,
     }
-    await securePassthrough(turnDeviceOnRequest, deviceKey)
   }
+  await securePassthrough(turnDeviceOnRequest, deviceKey)
+}
 
-  export const turnOff = async (deviceKey: TapoDeviceKey) => {
-    return turnOn(deviceKey, false);
-  }
+export const turnOff = async (deviceKey: TapoDeviceKey) => {
+  return turnOn(deviceKey, false);
+}
 
-  export const setBrightness = async (deviceKey: TapoDeviceKey, brightnessLevel: number = 100) => {
-    const setBrightnessRequest = {
-      "method": "set_device_info",
-      "params":{
-        "brightness": brightnessLevel,
-      }
+export const setBrightness = async (deviceKey: TapoDeviceKey, brightnessLevel: number = 100) => {
+  const setBrightnessRequest = {
+    "method": "set_device_info",
+    "params":{
+      "brightness": brightnessLevel,
     }
-    await securePassthrough(setBrightnessRequest, deviceKey)
   }
+  await securePassthrough(setBrightnessRequest, deviceKey)
+}
 
-  export const setColour = async (deviceKey: TapoDeviceKey, colour: string = 'white') => {
-    const {
-      brightness,
-      saturation,
-      hue,
-      colour_temp
-    } = await getColour(colour);
-    const setBrightnessRequest = {
-      "method": "set_device_info",
-      "params": colour.startsWith('#') ? {
-        brightness,
-        saturation,
-        hue
-      } : { 
-        colour_temp
-      }
+export const setColour = async (deviceKey: TapoDeviceKey, colour: string = 'white') => {    
+  const params = await getColour(colour);
+
+  const setColourRequest = {
+    "method": "set_device_info",
+    params
+  }
+  await securePassthrough(setColourRequest, deviceKey)
+}
+
+export const getDeviceInfo = async (handshakeResponse: TapoDeviceKey): Promise<TapoDeviceInfo> => {
+  const turnDeviceOnRequest = {
+    "method": "get_device_info"
+  }
+  return augmentTapoDeviceInfo(await securePassthrough(turnDeviceOnRequest, handshakeResponse))
+}
+
+export const securePassthrough = async (deviceRequest: any, deviceKey: TapoDeviceKey):Promise<any> => {
+  const encryptedRequest = encrypt(deviceRequest, deviceKey)
+  const securePassthroughRequest = {
+    "method": "securePassthrough",
+    "params": {
+        "request": encryptedRequest, 
     }
-    await securePassthrough(setBrightnessRequest, deviceKey)
-  }
-
-  export const getDeviceInfo = async (handshakeResponse: TapoDeviceKey): Promise<TapoDeviceInfo> => {
-    const turnDeviceOnRequest = {
-      "method": "get_device_info"
-    }
-    return augmentTapoDeviceInfo(await securePassthrough(turnDeviceOnRequest, handshakeResponse))
-  }
-
-  export const securePassthrough = async (deviceRequest: any, deviceKey: TapoDeviceKey):Promise<any> => {
-    const encryptedRequest = encrypt(deviceRequest, deviceKey)
-    const securePassthroughRequest = 
-    {
-      "method": "securePassthrough",
-      "params": {
-          "request": encryptedRequest, 
-     }
   }
 
   const response = await axios({
