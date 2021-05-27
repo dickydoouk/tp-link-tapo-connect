@@ -1,0 +1,73 @@
+export const presetColours = {
+  blue: {
+    hue: 240,
+    saturation: 100,
+    color_temp: 0
+  },
+  red: {
+    hue: 0,
+    saturation: 100,
+    color_temp: 0
+  },
+  yellow: {
+    hue: 60,
+    saturation: 100,
+    color_temp: 0
+  },
+  green: {
+    hue: 120,
+    saturation: 100,
+    color_temp: 0
+  },
+  white: {
+    color_temp: 4500
+  },
+  daylightWhite: {
+    color_temp: 5500
+  }
+}
+
+export const hexToHsl = (hex: string) => {
+  if (hex.toLowerCase() === '#000000') return console.error('Cannot set light to black');
+  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  
+  let r = parseInt(result[1], 16);
+  let g = parseInt(result[2], 16);
+  let b = parseInt(result[3], 16);
+
+  r /= 255, g /= 255, b /= 255;
+
+  let max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if(max == min){
+    h = s = 0; // achromatic
+  } else {
+    let d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch(max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  s = s * 100;
+  s = Math.round(s);
+  l = l * 100;
+  l = Math.round(l);
+
+  return {
+    hue: h,
+    saturation: s,
+    brightness: l
+  };
+}
+
+export const getColour = (colour: string) => {
+  colour = colour.toLowerCase();
+  if (colour.startsWith('#')) return hexToHsl(colour);
+  if (Object.keys(presetColours).includes(colour)) return presetColours[colour];
+  throw new Error('Invalid Colour');
+}

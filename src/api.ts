@@ -2,6 +2,7 @@ import axios from 'axios';
 import { encrypt, decrypt, generateKeyPair, readDeviceKey, base64Encode, base64Decode, shaDigest } from "./tplinkCipher";
 import { TapoDevice, TapoDeviceKey, TapoDeviceInfo } from "./types";
 import { resolveMacToIp } from './network-tools';
+import { getColour } from './colour-helper';
 
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
 
@@ -115,6 +116,23 @@ export const turnOn = async (deviceKey: TapoDeviceKey, deviceOn: boolean = true)
       "method": "set_device_info",
       "params":{
         "brightness": brightnessLevel,
+      }
+    }
+    await securePassthrough(setBrightnessRequest, deviceKey)
+  }
+
+  export const setColour = async (deviceKey: TapoDeviceKey, colour: string = 'white') => {
+    const {
+      brightness,
+      saturation,
+      hue
+    } = await getColour(colour);
+    const setBrightnessRequest = {
+      "method": "set_device_info",
+      "params":{
+        brightness,
+        saturation,
+        hue
       }
     }
     await securePassthrough(setBrightnessRequest, deviceKey)
