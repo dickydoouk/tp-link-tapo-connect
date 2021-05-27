@@ -30,7 +30,7 @@ export const presetColours = {
 export const hexToHsl = (hex: string) => {
   if (hex.toLowerCase() === '#000000') return console.error('Cannot set light to black');
   let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  
+
   let r = parseInt(result[1], 16);
   let g = parseInt(result[2], 16);
   let b = parseInt(result[3], 16);
@@ -53,11 +53,17 @@ export const hexToHsl = (hex: string) => {
     h /= 6;
   }
 
-  s = s * 100;
+  s = s*100;
   s = Math.round(s);
-  l = l * 100;
+  l = l*100;
   l = Math.round(l);
+  h = Math.round(360*h);
 
+  console.log({
+    hue: h,
+    saturation: s,
+    brightness: l
+  });
   return {
     hue: h,
     saturation: s,
