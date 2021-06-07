@@ -4,7 +4,11 @@ Unofficial Node.js library for connecting to TP-Link Tapo devices. Currently lim
 
 ## Installation Instructions
 
-```npm install tp-link-tapo-connect```
+```bash
+  npm install tp-link-tapo-connect
+```
+
+<br/>
 
 ## Usage
 
@@ -36,6 +40,28 @@ await turnOn(deviceToken);
 await setBrightness(deviceToken, 75); // Sets brightness to 75% for smart bulbs only
 await turnOff(deviceToken);
 ```
+
+Changing the bulb colour (Colour smart bulbs only):
+
+```ts
+await turnOn(deviceToken);
+await setColour(deviceToken, 'white'); // Sets the colour for colour smart bulbs only
+await setColour(deviceToken, '#FF00FF'); // Sets the colour for colour smart bulbs only using a hex value
+await turnOff(deviceToken);
+```
+
+#### Availble Preset Colours
+
+||
+| :-: |
+| white |
+| daylightwhite |
+| blue |
+| red |
+| green |
+| yellow |
+
+<br/>
 
 ### Credits
 

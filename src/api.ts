@@ -2,10 +2,11 @@ import axios from 'axios';
 import { encrypt, decrypt, generateKeyPair, readDeviceKey, base64Encode, base64Decode, shaDigest } from "./tplinkCipher";
 import { TapoDevice, TapoDeviceKey, TapoDeviceInfo } from "./types";
 import { resolveMacToIp } from './network-tools';
+import { getColour } from './colour-helper';
 
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
 
-export const cloudLogin = async (email: string, password: string): Promise<string> => {
+export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined): Promise<string> => {
   const loginRequest = {
     "method": "login",
     "params": {
@@ -77,10 +78,10 @@ export const handshake = async (deviceIp: string):Promise<TapoDeviceKey> => {
   }
 }
 
-export const loginDevice = async (email: string, password: string, device: TapoDevice) => 
+export const loginDevice = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, device: TapoDevice) => 
   loginDeviceByIp(email, password, await resolveMacToIp(device.deviceMac));
 
-export const loginDeviceByIp = async (email: string, password: string, deviceIp: string):Promise<TapoDeviceKey> => {
+export const loginDeviceByIp = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, deviceIp: string):Promise<TapoDeviceKey> => {
   const deviceKey = await handshake(deviceIp);
   const loginDeviceRequest = 
     {
@@ -97,44 +98,53 @@ export const loginDeviceByIp = async (email: string, password: string, deviceIp:
 }
 
 export const turnOn = async (deviceKey: TapoDeviceKey, deviceOn: boolean = true) => {
-    const turnDeviceOnRequest = {
-      "method": "set_device_info",
-      "params":{
-        "device_on": deviceOn,
-      }
+  const turnDeviceOnRequest = {
+    "method": "set_device_info",
+    "params":{
+      "device_on": deviceOn,
     }
-    await securePassthrough(turnDeviceOnRequest, deviceKey)
   }
+  await securePassthrough(turnDeviceOnRequest, deviceKey)
+}
 
-  export const turnOff = async (deviceKey: TapoDeviceKey) => {
-    return turnOn(deviceKey, false);
-  }
+export const turnOff = async (deviceKey: TapoDeviceKey) => {
+  return turnOn(deviceKey, false);
+}
 
-  export const setBrightness = async (deviceKey: TapoDeviceKey, brightnessLevel: number = 100) => {
-    const setBrightnessRequest = {
-      "method": "set_device_info",
-      "params":{
-        "brightness": brightnessLevel,
-      }
+export const setBrightness = async (deviceKey: TapoDeviceKey, brightnessLevel: number = 100) => {
+  const setBrightnessRequest = {
+    "method": "set_device_info",
+    "params":{
+      "brightness": brightnessLevel,
     }
-    await securePassthrough(setBrightnessRequest, deviceKey)
   }
+  await securePassthrough(setBrightnessRequest, deviceKey)
+}
 
-  export const getDeviceInfo = async (handshakeResponse: TapoDeviceKey): Promise<TapoDeviceInfo> => {
-    const turnDeviceOnRequest = {
-      "method": "get_device_info"
+export const setColour = async (deviceKey: TapoDeviceKey, colour: string = 'white') => {    
+  const params = await getColour(colour);
+
+  const setColourRequest = {
+    "method": "set_device_info",
+    params
+  }
+  await securePassthrough(setColourRequest, deviceKey)
+}
+
+export const getDeviceInfo = async (handshakeResponse: TapoDeviceKey): Promise<TapoDeviceInfo> => {
+  const turnDeviceOnRequest = {
+    "method": "get_device_info"
+  }
+  return augmentTapoDeviceInfo(await securePassthrough(turnDeviceOnRequest, handshakeResponse))
+}
+
+export const securePassthrough = async (deviceRequest: any, deviceKey: TapoDeviceKey):Promise<any> => {
+  const encryptedRequest = encrypt(deviceRequest, deviceKey)
+  const securePassthroughRequest = {
+    "method": "securePassthrough",
+    "params": {
+        "request": encryptedRequest, 
     }
-    return augmentTapoDeviceInfo(await securePassthrough(turnDeviceOnRequest, handshakeResponse))
-  }
-
-  export const securePassthrough = async (deviceRequest: any, deviceKey: TapoDeviceKey):Promise<any> => {
-    const encryptedRequest = encrypt(deviceRequest, deviceKey)
-    const securePassthroughRequest = 
-    {
-      "method": "securePassthrough",
-      "params": {
-          "request": encryptedRequest, 
-     }
   }
 
   const response = await axios({
