@@ -201,6 +201,7 @@ const checkError = (responseData: any) => {
       case -1501: throw new Error("Invalid request or credentials");
       case -1002: throw new Error("Incorrect request");
       case -1003: throw new Error("JSON format error");
+      case -20601: throw new Error("Incorrect email or password");
       case -20675: throw new Error("Cloud token expired or invalid");
       case 9999: throw new Error("Device token expired or invalid");
       default: throw new Error(`Unexpected Error Code: ${errorCode}`);
