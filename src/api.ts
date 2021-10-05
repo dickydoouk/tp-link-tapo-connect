@@ -6,6 +6,12 @@ import { getColour } from './colour-helper';
 
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
 
+export {
+    TapoDevice,
+    TapoDeviceKey,
+    TapoDeviceInfo
+};
+
 export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined): Promise<string> => {
   const loginRequest = {
     "method": "login",
