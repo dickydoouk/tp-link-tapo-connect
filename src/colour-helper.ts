@@ -24,6 +24,9 @@ export const presetColours = {
   },
   daylightwhite: {
     color_temp: 5500
+  },
+  warmwhite: {
+    color_temp: 2700
   }
 }
 
