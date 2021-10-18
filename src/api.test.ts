@@ -1,4 +1,4 @@
-import { cloudLogin, listDevices, listDevicesByType, loginDevice, loginDeviceByIp, getDeviceInfo, turnOn } from './api';
+import { cloudLogin, listDevices, listDevicesByType, loginDevice, loginDeviceByIp, getDeviceInfo, turnOn, setBrightness, setColour } from './api';
 
 const email = "<TP LINK ACCOUNT EMAIL>";
 const password = "<TP LINK ACCOUNT PASSWORD>";
@@ -67,7 +67,7 @@ xtest('Set bulb colour', async () => {
 
     const deviceToken = await loginDevice(email, password, smartBulb);
     await turnOn(deviceToken);
-    await setBrightness(bulb, 75);
-    await setColour(bulb, 'warmwhite');
+    await setBrightness(deviceToken, 75);
+    await setColour(deviceToken, 'warmwhite');
 });
 
