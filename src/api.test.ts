@@ -33,6 +33,20 @@ xtest('List smart plugs', async () => {
 
 });
 
+xtest('List smart bulbs', async () => {
+    const cloudToken = await cloudLogin(email, password);
+    
+    const devices = await listDevicesByType(cloudToken, 'SMART.TAPOBULB');
+    console.log(devices);
+    
+    const smartBulb = devices[0];
+    console.log(smartBulb);
+
+    const deviceToken = await loginDevice(email, password, smartBulb);
+    const getDeviceInfoResponse = await getDeviceInfo(deviceToken);
+    console.log(getDeviceInfoResponse);
+});
+
 xtest('Turn device on', async () => {
     const deviceToken = await loginDeviceByIp(email, password, deviceIp);
     
@@ -40,5 +54,20 @@ xtest('Turn device on', async () => {
     console.log(getDeviceInfoResponse);
 
     await turnOn(deviceToken);
+});
+
+xtest('Set bulb colour', async () => {
+    const cloudToken = await cloudLogin(email, password);
+    
+    const devices = await listDevicesByType(cloudToken, 'SMART.TAPOBULB');
+    console.log(devices);
+    
+    const smartBulb = devices[0];
+    console.log(smartBulb);
+
+    const deviceToken = await loginDevice(email, password, smartBulb);
+    await turnOn(deviceToken);
+    await setBrightness(bulb, 75);
+    await setColour(bulb, 'warmwhite');
 });
 

@@ -55,6 +55,7 @@ await turnOff(deviceToken);
 ||
 | :-: |
 | white |
+| warmwhite |
 | daylightwhite |
 | blue |
 | red |

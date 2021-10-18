@@ -6,6 +6,13 @@ xtest('Return preset colour from getColour', async () => {
     console.log(colourConfig);
 });
 
+xtest('Return preset colour (warmwhite) from getColour', async () => {
+    const colourConfig = await getColour('warmwhite');
+    
+    console.log(colourConfig);
+});
+
+
 xtest('Return hex colour from getColour', async () => {
   const colourConfig = await getColour('#000000');
   
