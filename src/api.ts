@@ -3,6 +3,7 @@ import { encrypt, decrypt, generateKeyPair, readDeviceKey, base64Encode, base64D
 import { TapoDevice, TapoDeviceKey, TapoDeviceInfo } from "./types";
 import { resolveMacToIp } from './network-tools';
 import { getColour } from './colour-helper';
+import { timeout } from './time-helper'; 
 
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
 
@@ -113,8 +114,18 @@ export const turnOn = async (deviceKey: TapoDeviceKey, deviceOn: boolean = true)
   await securePassthrough(turnDeviceOnRequest, deviceKey)
 }
 
+export const turnOnAfter = async (deviceKey: TapoDeviceKey, seconds) => {
+  await timeout(seconds * 1000);
+  await turnOn(deviceKey);
+}
+
 export const turnOff = async (deviceKey: TapoDeviceKey) => {
   return turnOn(deviceKey, false);
+}
+
+export const turnOffAfter = async (deviceKey: TapoDeviceKey, seconds) => {
+  await timeout(seconds * 1000);
+  await turnOff(deviceKey);
 }
 
 export const setBrightness = async (deviceKey: TapoDeviceKey, brightnessLevel: number = 100) => {
