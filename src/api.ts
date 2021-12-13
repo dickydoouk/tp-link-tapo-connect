@@ -137,11 +137,11 @@ export const setColour = async (deviceKey: TapoDeviceKey, colour: string = 'whit
   await securePassthrough(setColourRequest, deviceKey)
 }
 
-export const getDeviceInfo = async (handshakeResponse: TapoDeviceKey): Promise<TapoDeviceInfo> => {
-  const turnDeviceOnRequest = {
+export const getDeviceInfo = async (deviceKey: TapoDeviceKey): Promise<TapoDeviceInfo> => {
+  const statusRequest = {
     "method": "get_device_info"
   }
-  return augmentTapoDeviceInfo(await securePassthrough(turnDeviceOnRequest, handshakeResponse))
+  return augmentTapoDeviceInfo(await securePassthrough(statusRequest, deviceKey))
 }
 
 export const securePassthrough = async (deviceRequest: any, deviceKey: TapoDeviceKey):Promise<any> => {
