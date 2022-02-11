@@ -69,9 +69,20 @@ export const hexToHsl = (hex: string) => {
   };
 }
 
+export const temperature = (temp: string) => {
+  let t = parseInt(temp.slice(0,-1));
+
+  if(t<2500||t>6500) return console.error('Colour temperature should be between 2500K and 6500K.');
+
+  return{
+    color_temp: t
+  };
+}
+
 export const getColour = (colour: string) => {
   colour = colour.toLowerCase();
   if (colour.startsWith('#')) return hexToHsl(colour);
+  if (colour.endsWith('k')) return temperature(colour);
   if (Object.keys(presetColours).includes(colour)) return presetColours[colour];
   throw new Error('Invalid Colour');
 }
