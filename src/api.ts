@@ -163,6 +163,13 @@ export const getDeviceInfo = async (deviceKey: TapoDeviceKey): Promise<TapoDevic
   return augmentTapoDeviceInfo(await securePassthrough(statusRequest, deviceKey))
 }
 
+export const getEnergyUsage = async (deviceKey: TapoDeviceKey): Promise<TapoDeviceInfo> => {
+  const statusRequest = {
+    "method": "get_energy_usage"
+  }
+  return securePassthrough(statusRequest, deviceKey)
+}
+
 export const securePassthrough = async (deviceRequest: any, deviceKey: TapoDeviceKey):Promise<any> => {
   const encryptedRequest = encrypt(deviceRequest, deviceKey)
   const securePassthroughRequest = {
