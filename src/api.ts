@@ -198,7 +198,7 @@ export const isTapoDevice = (deviceType: string) => {
   }
 }
 
-const checkError = (responseData: any) => {
+export const checkError = (responseData: any) => {
   const errorCode = responseData["error_code"];
   if (errorCode) {
     switch (errorCode) {
@@ -210,7 +210,7 @@ const checkError = (responseData: any) => {
       case -20601: throw new Error("Incorrect email or password");
       case -20675: throw new Error("Cloud token expired or invalid");
       case 9999: throw new Error("Device token expired or invalid");
-      default: throw new Error(`Unexpected Error Code: ${errorCode}`);
+      default: throw new Error(`Unexpected Error Code: ${errorCode} (${responseData["msg"]})`);
     }
     
   }
