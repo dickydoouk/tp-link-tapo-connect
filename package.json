@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "axios": "^0.21.4",
-    "local-devices": "^3.1.0"
+    "local-devices": "^3.1.0",
+    "uuid": "^8.3.2"
   }
 }
