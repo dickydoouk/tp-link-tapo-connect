@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { encrypt, decrypt, generateKeyPair, readDeviceKey, base64Encode, base64Decode, shaDigest } from "./tplinkCipher";
 import { TapoDevice, TapoDeviceKey, TapoDeviceInfo } from "./types";
 import { resolveMacToIp } from './network-tools';
@@ -19,7 +20,7 @@ export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || un
       "appType": "Tapo_Android",
       "cloudPassword": password,
       "cloudUserName": email,
-      "terminalUUID": "59284a9c-e7b1-40f9-8ecd-b9e70c90d19b"
+      "terminalUUID": uuidv4()
     }
   }
   const response = await axios({
