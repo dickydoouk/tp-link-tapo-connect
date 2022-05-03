@@ -1,4 +1,4 @@
-import { cloudLogin, listDevices, listDevicesByType, loginDevice, loginDeviceByIp, getDeviceInfo, turnOn, setBrightness, setColour } from './api';
+import { cloudLogin, listDevices, listDevicesByType, loginDevice, loginDeviceByIp, getDeviceInfo, turnOn, setBrightness, setColour, checkError } from './api';
 
 const email = "<TP LINK ACCOUNT EMAIL>";
 const password = "<TP LINK ACCOUNT PASSWORD>";
@@ -69,5 +69,14 @@ xtest('Set bulb colour', async () => {
     await turnOn(deviceToken);
     await setBrightness(deviceToken, 75);
     await setColour(deviceToken, 'warmwhite');
+});
+
+test('Handle unknown error, throwing a helpful error message', async () => {
+    expect(() => {
+        checkError({
+            error_code: -20004,
+            msg: "API rate limit exceeded"
+        })
+    }).toThrow('Unexpected Error Code: -20004 (API rate limit exceeded)')
 });
 
