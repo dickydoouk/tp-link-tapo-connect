@@ -58,3 +58,33 @@ export type TapoDevice = {
     sessionCookie: string;
     token?: string;
   }
+
+  export type TapoVideoImage = {
+    uri: string;
+    length: number;
+    uriExpiresAt: number;
+  }
+
+  export type TapoVideo = {
+    uri: string;
+    duration: number;
+    m3u8: string;
+    startTimestamp: number;
+    uriExpiresAt: number;
+  }
+
+  export type TapoVideoPageItem = {
+    uuid: string;
+    video: TapoVideo[];
+    image: TapoVideoImage[];
+    createdTime: number;
+    eventLocalTime: string;
+  }
+
+  export type TapoVideoList = {
+    deviceId: string;
+    total: number;
+    page: number;
+    pageSize: number;
+    index: TapoVideoPageItem[];
+  }
