@@ -1,16 +1,34 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt, decrypt, generateKeyPair, readDeviceKey, base64Encode, base64Decode, shaDigest } from "./tplinkCipher";
-import { TapoDevice, TapoDeviceKey, TapoDeviceInfo } from "./types";
+import { TapoDevice, TapoDeviceKey, TapoDeviceInfo, TapoVideoImage, TapoVideoPageItem, TapoVideoList, TapoVideo } from "./types";
 import { resolveMacToIp } from './network-tools';
 import { getColour } from './colour-helper';
+import tplinkCaCert from "./tplink-ca-cert";
+import * as https from "https";
 
+// another variant is https://n-euw1-wap-gw.tplinkcloud.com
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
+
+/**
+ * also url may be one of that:
+ * "http://use1-relay-dcipc.i.tplinknbu.com"
+ * "http://aps1-relay-dcipc-beta.i.tplinknbu.com"
+ * "http://euw1-relay-dcipc.i.tplinknbu.com"
+ * "http://aps1-relay-dcipc-beta.i.tplinknbu.com"
+ * "http://aps1-relay-dcipc.i.tplinknbu.com"
+ * "http://aps1-relay-dcipc-beta.i.tplinknbu.com"
+ */
+const baseTapoCareUrl = 'https://euw1-app-tapo-care.i.tplinknbu.com'
 
 export {
     TapoDevice,
     TapoDeviceKey,
-    TapoDeviceInfo
+    TapoDeviceInfo,
+    TapoVideoImage,
+    TapoVideoPageItem,
+    TapoVideoList,
+    TapoVideo,
 };
 
 export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined): Promise<string> => {
@@ -182,6 +200,41 @@ const augmentTapoDevice = async (deviceInfo: TapoDevice): Promise<TapoDevice> =>
   }
 }
 
+export const tapoCareCloudVideos = async (cloudToken: string, deviceId: string, order: string = 'desc', page: number = 0, pageSize: number = 20, startTime: string | null = null, endTime: string | null = null): Promise<TapoVideoList> => {
+  const response = await tplinkCaAxios()({
+    method: 'get',
+    url: `${baseTapoCareUrl}/v1/videos`,
+    params: {
+      deviceId,
+      page,
+      pageSize,
+      order,
+      startTime,
+      endTime,
+    },
+    headers: tapoCareAuthHeaders(cloudToken),
+  })
+
+  checkTapoCareError(response)
+
+  return <TapoVideoList> response.data
+}
+
+const tapoCareAuthHeaders = (cloudToken: string): { authorization: string } => {
+  return {
+    'authorization': `ut|${cloudToken}`,
+  };
+}
+
+const tplinkCaAxios = (): AxiosInstance => {
+  const httpsAgent = new https.Agent({
+    rejectUnauthorized: true,
+    ca: tplinkCaCert,
+  })
+
+  return axios.create({ httpsAgent })
+}
+
 const augmentTapoDeviceInfo = (deviceInfo: TapoDeviceInfo): TapoDeviceInfo => {
     return {
       ...deviceInfo,
@@ -194,6 +247,7 @@ export const isTapoDevice = (deviceType: string) => {
   switch (deviceType) {
     case 'SMART.TAPOPLUG':
     case 'SMART.TAPOBULB':
+    case 'SMART.IPCAMERA':
     return true
     default: return false
   }
@@ -214,5 +268,12 @@ export const checkError = (responseData: any) => {
       default: throw new Error(`Unexpected Error Code: ${errorCode} (${responseData["msg"]})`);
     }
     
+  }
+}
+
+export const checkTapoCareError = (responseData: any) => {
+  const errorCode = responseData?.code;
+  if (errorCode) {
+    throw new Error(`Unexpected Error Code: ${errorCode} (${responseData["message"]})`);
   }
 }
