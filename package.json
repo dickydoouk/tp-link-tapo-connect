@@ -1,6 +1,6 @@
 {
   "name": "tp-link-tapo-connect",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "JS Library for connecting to TP-Link Tapo devices",
   "main": "dist/api.js",
   "types": "dist/api.d.ts",
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.21.4",
-    "local-devices": "^3.1.0",
+    "local-devices": "^3.2.0",
     "uuid": "^8.3.2"
   }
 }

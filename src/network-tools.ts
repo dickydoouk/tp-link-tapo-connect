@@ -1,7 +1,8 @@
 import find from 'local-devices'
 
 export const resolveMacToIp = async (mac: string) :Promise<string> => {
-    const devices = await find();
+    //@ts-ignore
+    const devices = await find(null, true);
     return devices.find(device => tidyMac(device.mac) == tidyMac(mac)).ip
 }
 
