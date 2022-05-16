@@ -6,7 +6,8 @@
   "types": "dist/api.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "jest --watchAll",
+    "test": "jest",
+    "watch": "jest --watchAll",
     "prepare": "npm run build"
   },
   "repository": {
