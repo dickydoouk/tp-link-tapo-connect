@@ -1,11 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
-import { v4 as uuidv4 } from 'uuid';
-import { encrypt, decrypt, generateKeyPair, readDeviceKey, base64Encode, base64Decode, shaDigest } from "./tplinkCipher";
-import { TapoDevice, TapoDeviceKey, TapoDeviceInfo, TapoVideoImage, TapoVideoPageItem, TapoVideoList, TapoVideo } from "./types";
-import { resolveMacToIp } from './network-tools';
-import { getColour } from './colour-helper';
-import tplinkCaCert from "./tplink-ca-cert";
 import * as https from "https";
+import { v4 as uuidv4 } from 'uuid';
+import { getColour } from './colour-helper';
+import { resolveMacToIp } from './network-tools';
+import tplinkCaCert from "./tplink-ca-cert";
+import { base64Decode, base64Encode, decrypt, encrypt, generateKeyPair, readDeviceKey, shaDigest } from "./tplinkCipher";
+import { TapoDevice, TapoDeviceInfo, TapoDeviceKey, TapoVideo, TapoVideoImage, TapoVideoList, TapoVideoPageItem } from "./types";
 
 // another variant is https://n-euw1-wap-gw.tplinkcloud.com
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
@@ -22,13 +22,13 @@ const baseUrl = 'https://eu-wap.tplinkcloud.com/'
 const baseTapoCareUrl = 'https://euw1-app-tapo-care.i.tplinknbu.com'
 
 export {
-    TapoDevice,
-    TapoDeviceKey,
-    TapoDeviceInfo,
-    TapoVideoImage,
-    TapoVideoPageItem,
-    TapoVideoList,
-    TapoVideo,
+  TapoDevice,
+  TapoDeviceKey,
+  TapoDeviceInfo,
+  TapoVideoImage,
+  TapoVideoPageItem,
+  TapoVideoList,
+  TapoVideo,
 };
 
 export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined): Promise<string> => {
@@ -114,7 +114,8 @@ export const loginDeviceByIp = async (email: string = process.env.TAPO_USERNAME 
       "params": {
           "username": base64Encode(shaDigest(email)),
           "password": base64Encode(password)
-     }
+      },
+      "requestTimeMils": 0
   }
 
   const loginDeviceResponse =  await securePassthrough(loginDeviceRequest, deviceKey);
