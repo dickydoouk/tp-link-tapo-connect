@@ -128,7 +128,8 @@ export const turnOn = async (deviceKey: TapoDeviceKey, deviceOn: boolean = true)
     "method": "set_device_info",
     "params":{
       "device_on": deviceOn,
-    }
+    },
+    "terminalUUID": uuidv4()
   }
   await securePassthrough(turnDeviceOnRequest, deviceKey)
 }
@@ -267,6 +268,7 @@ export const checkError = (responseData: any) => {
     switch (errorCode) {
       case 0: return;
       case -1010: throw new Error("Invalid public key length");
+      case -1012: throw new Error("Invalid terminal UUID");
       case -1501: throw new Error("Invalid request or credentials");
       case -1002: throw new Error("Incorrect request");
       case -1003: throw new Error("JSON format error");
