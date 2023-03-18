@@ -1,8 +1,9 @@
 # TP-Link Tapo Connect
 
 Unofficial Node.js library for connecting to TP-Link Tapo devices. Currently limited to the:
-- P100 & P105 smart plugs
-- L510E smart bulbs
+- P100, P105, P110, P115 smart plugs
+- L510E, L530E smart bulbs
+- L900-10 smart strip
 - IP cameras like C320WS
 
 ## Installation Instructions
