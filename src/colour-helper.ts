@@ -84,5 +84,5 @@ export const getColour = (colour: string) => {
   if (colour.startsWith('#')) return hexToHsl(colour);
   if (colour.endsWith('k')) return temperature(colour);
   if (Object.keys(presetColours).includes(colour)) return presetColours[colour];
-  throw new Error('Invalid Colour');
+  console.error('Invalid Colour');
 }
