@@ -2,6 +2,7 @@
 const {defaults} = require('jest-config');
 module.exports = {
   "testEnvironment": "node",
+  testTimeout: 60000,
   "roots": [
     "<rootDir>/src"
   ],

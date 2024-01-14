@@ -50,6 +50,10 @@ export type TapoDevice = {
     time_diff: number;
     lang: string; 
   }
+
+  export type TapoProtocol = {
+    send: (request: any) => any
+  }
   
   export type TapoDeviceKey = {
     key: Buffer;
