@@ -58,8 +58,11 @@ const listDevices = async (): Promise<Array<TapoDevice>> => {
   }
   const response = await axios({
     method: 'post',
-    url: `${baseUrl}?token=${cloudToken}`,
-    data: getDeviceRequest
+    url: baseUrl,
+    data: getDeviceRequest,
+    params: {
+      token: cloudToken
+    }
   })
 
   checkError(response.data);

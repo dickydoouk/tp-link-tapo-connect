@@ -25,7 +25,7 @@ xtest('List smart plugs', async () => {
     const devices = await cloudApi.listDevicesByType('SMART.TAPOPLUG');
     console.log(devices);
     
-    const smartPlug = devices[0];
+    const smartPlug = devices[1];
     console.log(smartPlug);
 
     const device = await loginDevice(email, password, smartPlug);
@@ -48,13 +48,13 @@ xtest('List smart bulbs', async () => {
     console.log(getDeviceInfoResponse);
 });
 
-test('Turn device on', async () => {
+xtest('Turn device on', async () => {
     const device = await loginDeviceByIp(email, password, deviceIp);
     
     const getDeviceInfoResponse = await device.getDeviceInfo();
     console.log(getDeviceInfoResponse);
 
-    // await turnOn(deviceToken);
+    await device.turnOn();
 });
 
 xtest('Set bulb colour', async () => {

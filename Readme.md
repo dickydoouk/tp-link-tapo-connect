@@ -54,7 +54,7 @@ await device.setColour('#FF00FF'); // Sets the colour for colour smart bulbs onl
 await device.turnOff();
 ```
 
-#### Availble Preset Colours
+#### Available Preset Colours
 
 ||
 | :-: |
@@ -88,8 +88,6 @@ is now
 const device = await loginDeviceByIp(email, password, deviceIp);
 await device.turnOn();
 ```
-
-
 
 ### Credits
 

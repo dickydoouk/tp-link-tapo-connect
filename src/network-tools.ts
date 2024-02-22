@@ -1,10 +1,9 @@
-import find from 'local-devices'
+import { parse } from 'macaddr';
+import arp from '@network-utils/arp-lookup'
 
 export const resolveMacToIp = async (mac: string) :Promise<string> => {
-    const devices = await find({ skipNameResolution: true });
-    return devices.find(device => tidyMac(device.mac) == tidyMac(mac)).ip
+    return arp.toIP(tidyMac(mac));
 }
 
-const tidyMac = (mac: string): string => {
-    return mac.replace(/:/g, '').toUpperCase();
-}
+const tidyMac = (mac: string): string => 
+    parse(mac).toString();
