@@ -8,7 +8,9 @@
     "build": "tsc",
     "test": "jest",
     "watch": "jest --watchAll",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "publish": "npm publish",
+    "prepublishOnly": "npm test"
   },
   "repository": {
     "type": "git",
