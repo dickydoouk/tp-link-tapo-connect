@@ -73,6 +73,47 @@ await device.turnOff();
 const cloudVideos = await cloudApi.tapoCareCloudVideos(deviceId); //deviceId from listDevicesByType 
 ```
 
+### Web API Endpoints
+
+The library also provides a web API for device discovery and control. The web server is implemented using Express.js and provides the following endpoints:
+
+- `POST /cloudLogin`: Login to the TP-Link cloud.
+- `GET /listDevices`: List devices associated with the TP-Link account.
+- `POST /loginDeviceByIp`: Login to a device using its IP address.
+- `GET /discoverDevices`: Discover local devices on the network.
+
+#### Example Usage
+
+Start the web server:
+
+```bash
+node src/web-api.js
+```
+
+Login to the TP-Link cloud:
+
+```bash
+curl -X POST http://localhost:3000/cloudLogin -d '{"email": "your-email", "password": "your-password"}'
+```
+
+List devices:
+
+```bash
+curl -X GET http://localhost:3000/listDevices?email=your-email&password=your-password
+```
+
+Login to a device by IP:
+
+```bash
+curl -X POST http://localhost:3000/loginDeviceByIp -d '{"email": "your-email", "password": "your-password", "deviceIp": "192.168.0.1"}'
+```
+
+Discover local devices:
+
+```bash
+curl -X GET http://localhost:3000/discoverDevices?email=your-email&password=your-password
+```
+
 ### Migrating from version 1 to 2
 
 Version 2 favours returning a device object that has the necessary functions to manipulate the device rather
