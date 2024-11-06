@@ -104,19 +104,22 @@ return {
 }
 }
 
-export const loginDevice = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, device: TapoDevice) =>
-  loginDeviceByIp(email, password, await resolveMacToIp(device.deviceMac));
+export const loginDevice = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, device: TapoDevice) => {
+  const localIp = await resolveMacToIp(device.deviceMac);
+
+  if (!localIp) {
+    throw new Error(`Local IP of device with Mac address ${device.deviceMac} not found.`);
+  }
+
+  return loginDeviceByIp(email, password, localIp);
+}
 
 export const loginDeviceByIp = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, deviceIp: string) => {
   // Attempts to login using newer klap protocol first, then fallback to legacy secure pass through protocol
   return loginKlapDeviceByIp(email, password, deviceIp)
   .catch(error => {
-    if (error.message === "Klap protocol not supported") {
-      console.warn(`Failed to login due to ${error}\nFalling back to legacy login method`);
-      return loginLegacyDeviceByIp(email, password, deviceIp);
-    } else {
-      throw error
-    }
+    console.warn(`Failed to login due to ${error}\nFalling back to legacy login method`);
+    return loginLegacyDeviceByIp(email, password, deviceIp);
   });
 }
 
