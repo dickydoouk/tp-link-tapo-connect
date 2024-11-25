@@ -15,8 +15,8 @@ export const loginDeviceByIp = async (email: string, password: string, deviceIp:
     {
         responseType: 'arraybuffer',
         withCredentials: true
-    }).catch((error) => { 
-        if (error.response.status === 404) {
+    }).catch((error) => {
+        if (error?.response?.status === 404) {
             throw new Error(`Klap protocol not supported`)    
         }
         throw new Error(`handshake1 failed: ${error}`)
