@@ -1,5 +1,6 @@
-import { cloudLogin, loginDevice, loginDeviceByIp } from './api';
+import { cloudLogin, loginDevice, getLoginDetailsFromIP } from './api';
 import { checkError } from './tapo-utils';
+import {createKlapEncryptionSession} from "./klap-transport";
 
 const email = "<TP LINK ACCOUNT EMAIL>";
 const password = "<TP LINK ACCOUNT PASSWORD>";
@@ -28,7 +29,8 @@ xtest('List smart plugs', async () => {
     const smartPlug = devices[1];
     console.log(smartPlug);
 
-    const device = await loginDevice(email, password, smartPlug);
+    const login = await loginDevice(email, password, smartPlug);
+    const device = createKlapEncryptionSession(login.deviceIp, login.localSeed, login.remoteSeed, login.localAuthHash, login.sessionCookie, login.seq);
     const getDeviceInfoResponse = await device.getDeviceInfo();
     console.log(getDeviceInfoResponse);
 
@@ -43,13 +45,15 @@ xtest('List smart bulbs', async () => {
     const smartBulb = devices[0];
     console.log(smartBulb);
 
-    const device = await loginDevice(email, password, smartBulb);
+    const login = await loginDevice(email, password, smartBulb);
+    const device = createKlapEncryptionSession(login.deviceIp, login.localSeed, login.remoteSeed, login.localAuthHash, login.sessionCookie, login.seq)
     const getDeviceInfoResponse = await device.getDeviceInfo();
     console.log(getDeviceInfoResponse);
 });
 
 xtest('Turn device on', async () => {
-    const device = await loginDeviceByIp(email, password, deviceIp);
+    const login = await getLoginDetailsFromIP(email, password, deviceIp);
+    const device = createKlapEncryptionSession(login.deviceIp, login.localSeed, login.remoteSeed, login.localAuthHash, login.sessionCookie, login.seq)
     
     const getDeviceInfoResponse = await device.getDeviceInfo();
     console.log(getDeviceInfoResponse);
@@ -66,7 +70,8 @@ xtest('Set bulb colour', async () => {
     const smartBulb = devices[0];
     console.log(smartBulb);
 
-    const device = await loginDevice(email, password, smartBulb);
+    const login = await loginDevice(email, password, smartBulb);
+    const device = createKlapEncryptionSession(login.deviceIp, login.localSeed, login.remoteSeed, login.localAuthHash, login.sessionCookie, login.seq)
     await device.turnOn();
     await device.setBrightness(75);
     await device.setColour('warmwhite');

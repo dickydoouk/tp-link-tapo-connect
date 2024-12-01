@@ -1,12 +1,21 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, {AxiosInstance} from 'axios';
 import * as https from "https";
-import { v4 as uuidv4 } from 'uuid';
-import { resolveMacToIp } from './network-tools';
-import { TapoDevice, TapoDeviceInfo, TapoDeviceKey, TapoVideo, TapoVideoImage, TapoVideoList, TapoVideoPageItem } from "./types";
-import { loginDeviceByIp as loginKlapDeviceByIp} from "./klap-transport";
-import { loginDeviceByIp as loginLegacyDeviceByIp} from "./secure-passthrough-transport";
+import {v4 as uuidv4} from 'uuid';
+import {resolveMacToIp} from './network-tools';
+import {
+  LoginDetails,
+  TapoDevice,
+  TapoDeviceInfo,
+  TapoDeviceKey,
+  TapoVideo,
+  TapoVideoImage,
+  TapoVideoList,
+  TapoVideoPageItem
+} from "./types";
+import {createKlapEncryptionSession, loginDeviceByIp as loginKlapDeviceByIp} from "./klap-transport";
+import {loginDeviceByIp as loginLegacyDeviceByIp} from "./secure-passthrough-transport";
 import tplinkCaCert from './tplink-ca-cert';
-import { augmentTapoDevice, checkError } from './tapo-utils';
+import {augmentTapoDevice, checkError} from './tapo-utils';
 
 // another variant is https://n-euw1-wap-gw.tplinkcloud.com
 const baseUrl = 'https://eu-wap.tplinkcloud.com/'
@@ -39,7 +48,7 @@ export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || un
       "appType": "Tapo_Android",
       "cloudPassword": password,
       "cloudUserName": email,
-      "terminalUUID": uuidv4()
+      "terminalUUID": '98bd4d0b-9c78-49eb-8b7e-be34e9cb2648'
     }
   }
   const response = await axios({
@@ -104,23 +113,23 @@ return {
 }
 }
 
-export const loginDevice = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, device: TapoDevice) => {
+export const loginDevice = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, device: TapoDevice) : Promise<LoginDetails> => {
   const localIp = await resolveMacToIp(device.deviceMac);
 
   if (!localIp) {
     throw new Error(`Local IP of device with Mac address ${device.deviceMac} not found.`);
   }
 
-  return loginDeviceByIp(email, password, localIp);
+  return getLoginDetailsFromIP(email, password, localIp);
 }
 
-export const loginDeviceByIp = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, deviceIp: string) => {
+export const getLoginDetailsFromIP = async (email: string = process.env.TAPO_USERNAME || undefined, password: string = process.env.TAPO_PASSWORD || undefined, deviceIp: string) : Promise<LoginDetails>  => {
   // Attempts to login using newer klap protocol first, then fallback to legacy secure pass through protocol
-  return loginKlapDeviceByIp(email, password, deviceIp)
-  .catch(error => {
-    console.warn(`Failed to login due to ${error}\nFalling back to legacy login method`);
-    return loginLegacyDeviceByIp(email, password, deviceIp);
-  });
+    return await loginKlapDeviceByIp(email, password, deviceIp);
+}
+
+export const createKlapEncryption = (login : LoginDetails)=> {
+  return createKlapEncryptionSession(login.deviceIp, login.localSeed, login.remoteSeed, login.localAuthHash, login.sessionCookie, login.seq);
 }
 
 const tplinkCaAxios = (): AxiosInstance => {

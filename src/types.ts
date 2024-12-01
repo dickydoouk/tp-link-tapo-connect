@@ -17,6 +17,8 @@ export type TapoDevice = {
     status: number;
 
     ip?: string
+    getSeq: () => Buffer;
+    setSeq: (newSeq: Buffer) => void;
   }
   
   export type TapoDeviceInfo = {
@@ -91,4 +93,13 @@ export type TapoDevice = {
     page: number;
     pageSize: number;
     index: TapoVideoPageItem[];
+  }
+
+  export type LoginDetails = {
+      deviceIp: string;
+      localSeed: Buffer;
+      remoteSeed: Buffer;
+      localAuthHash: Buffer;
+      seq: Buffer | null;
+      sessionCookie: any;
   }

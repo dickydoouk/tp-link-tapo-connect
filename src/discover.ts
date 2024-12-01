@@ -1,5 +1,5 @@
 import find from "local-devices";
-import { loginDeviceByIp } from "./api";
+import { getLoginDetailsFromIP } from "./api";
 
 export const discoverLocalDevices = async (email: string, password: string) => {
     const devices = await find({ skipNameResolution: true });
@@ -7,7 +7,7 @@ export const discoverLocalDevices = async (email: string, password: string) => {
     return devices
         .filter(device => isTapoMac(device.mac))
         .map(device => ({
-            loginDevice: () => loginDeviceByIp(email, password, device.ip)
+            loginDevice: () => getLoginDetailsFromIP(email, password, device.ip)
         }));
 }
 
