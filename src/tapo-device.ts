@@ -46,6 +46,26 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
         }
         await send(setColourRequest)
       },
+
+      setHSL: async (hue: number, sat: number, lum: number) => {
+        const normalisedHue = hue % 360;
+        const normalisedSat = Math.max(0, Math.min(100, sat));
+        const normalisedLum = Math.max(0, Math.min(100, lum));
+
+        if(normalisedLum === 0) {
+          await setDeviceOn(false)
+        }
+
+        const setHSLRequest = {
+          "method": "set_device_info",
+          "params":{
+            "hue": normalisedHue,
+            "saturation": normalisedSat,
+            "brightness": normalisedLum
+          }
+        }
+        await send(setHSLRequest)
+      },
       
       getDeviceInfo:async (): Promise<TapoDeviceInfo> => {
         const statusRequest = {
