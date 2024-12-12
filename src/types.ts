@@ -1,4 +1,3 @@
-
 export type TapoDevice = {
     deviceType: string;
     fwVer: string;
@@ -18,7 +17,7 @@ export type TapoDevice = {
 
     ip?: string
   }
-  
+
   export type TapoDeviceInfo = {
     device_id: string;
     fw_ver: string;
@@ -49,12 +48,13 @@ export type TapoDevice = {
     region: string;
     time_diff: number;
     lang: string; 
+    color_temp?: number; // Added to ensure non-white colors use "hue" and "saturation" with color_temp: 0
   }
 
   export type TapoProtocol = {
     send: (request: any) => any
   }
-  
+
   export type TapoDeviceKey = {
     key: Buffer;
     iv: Buffer;

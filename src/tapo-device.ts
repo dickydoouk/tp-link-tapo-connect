@@ -37,15 +37,28 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
         await send(setBrightnessRequest)
       },
       
-      setColour: async (colour: string = 'white') => {
-        const params = getColour(colour);
-      
-        const setColourRequest = {
-          "method": "set_device_info",
-          params
-        }
-        await send(setColourRequest)
-      },
+setColour: async (colour: string = 'white') => {
+    let params;
+    try {
+        params = getColour(colour); // Should format color correctly
+    } catch (error) {
+        console.error("Error processing color:", error);
+        return;
+    }
+
+    // Ensure non-white colors use "hue" and "saturation" with color_temp: 0
+    if (!params.color_temp) {
+        params.color_temp = 0;
+    }
+
+    const setColourRequest = {
+      "method": "set_device_info",
+      params
+    };
+
+    await send(setColourRequest);
+},
+
       
       getDeviceInfo:async (): Promise<TapoDeviceInfo> => {
         const statusRequest = {
