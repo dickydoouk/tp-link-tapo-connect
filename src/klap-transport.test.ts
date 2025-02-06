@@ -7,7 +7,7 @@ const email = "<TP LINK ACCOUNT EMAIL>";
 const password = "<TP LINK ACCOUNT PASSWORD>";
 const deviceIp = "192.168.0.62";
 
-it ("getDeviceInfo", async () => {
+xit ("getDeviceInfo", async () => {
     const device = await loginDeviceByIp(email, password, deviceIp);
 
     const statusResult = await device.getDeviceInfo();
