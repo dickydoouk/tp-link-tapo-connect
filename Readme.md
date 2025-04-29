@@ -4,6 +4,7 @@ Unofficial Node.js library for connecting to TP-Link Tapo devices. Currently lim
 - P100, P105, P110, P115 smart plugs
 - L510E, L530E smart bulbs
 - L900-10 smart strip
+- P300 smart plug strip
 - IP cameras like C320WS
 
 ## Installation Instructions
@@ -95,3 +96,4 @@ Credit to this API go to:
 * https://github.com/fishbigger/TapoP100
 * https://github.com/K4CZP3R/tapo-p100-java-poc
 * https://gist.github.com/chriswheeldon/3b17d974db3817613c69191c0480fe55
+* https://github.com/mihai-dinculescu/tapo

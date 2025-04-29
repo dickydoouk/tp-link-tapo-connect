@@ -37,6 +37,7 @@ export const augmentTapoDevice = async (deviceInfo: TapoDevice): Promise<TapoDev
         case -1501: throw new Error("Invalid credentials");
         case -1002: throw new Error("Transport not available error");
         case -1003: throw new Error("Malformed json request");
+        case -20004: throw new Error("API rate limit exceeded");
         case -20104: throw new Error("Missing credentials");
         case -20601: throw new Error("Incorrect email or password");
         case -20675: throw new Error("Cloud token expired or invalid");
