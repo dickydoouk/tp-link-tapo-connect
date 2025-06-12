@@ -53,6 +53,7 @@ export const base64Encode = (data: string) : string => {
 }
 
 export const base64Decode = (data: string) : string => {
+    if (!data) return ''
     return Buffer.from(data, 'base64').toString();
 }
 

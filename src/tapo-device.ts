@@ -4,14 +4,32 @@ import { TapoDeviceInfo, TapoProtocol } from "./types"
 
 export const TapoDevice = ({ send }: TapoProtocol) => {
 
-    const setDeviceOn = async (deviceOn: boolean = true) => {
+  const wrapRequestForChildDevice = (request: any, deviceId: string | undefined) => {
+    // No child means no need to wrap
+    if  (!deviceId) return request
+
+    return {
+      method: 'control_child',
+      params: {
+        device_id: deviceId,
+        // Note: requestData can be an array of requests with the block below
+        requestData: request,
+        // requestData: {
+        // 	method: 'multipleRequest',
+        // 	params: {requests: [request]}
+        // },
+      }
+    }
+  }
+
+    const setDeviceOn = async (deviceOn: boolean, deviceId: string | undefined) => {
         const turnDeviceOnRequest = {
           "method": "set_device_info",
           "params":{
             "device_on": deviceOn,
           }
         }
-        await send(turnDeviceOnRequest)
+        await send(wrapRequestForChildDevice(turnDeviceOnRequest, deviceId))
       }
 
       const augmentTapoDeviceInfo = (deviceInfo: TapoDeviceInfo): TapoDeviceInfo => {
@@ -23,9 +41,11 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
     }
 
     return {
-      turnOn: () => setDeviceOn(true),
       
-      turnOff: () => setDeviceOn(false),
+
+      turnOn: (deviceId?: string) => setDeviceOn(true, deviceId),
+      
+      turnOff: (deviceId?: string) => setDeviceOn(false, deviceId),
       
       setBrightness: async (brightnessLevel: number = 100) => {
         const setBrightnessRequest = {
@@ -53,7 +73,7 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
         const normalisedLum = Math.max(0, Math.min(100, lum));
 
         if(normalisedLum === 0) {
-          await setDeviceOn(false)
+          await setDeviceOn(false, undefined)
         }
 
         const setHSLRequest = {
@@ -72,6 +92,17 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
           "method": "get_device_info"
         }
         return augmentTapoDeviceInfo(await send(statusRequest))
+      },
+
+      getChildDevicesInfo: async (): Promise<Array<TapoDeviceInfo>> => {
+        const listChildDeviceRequest = {
+          "method": "get_child_device_list",
+          start_index: 0,
+        }
+    
+        const res = await send(listChildDeviceRequest)
+      
+        return res.child_device_list.map((deviceInfo) => augmentTapoDeviceInfo(deviceInfo)).sort((a, b) => a.position - b.position)
       },
 
       getEnergyUsage: async (): Promise<TapoDeviceInfo> => {
