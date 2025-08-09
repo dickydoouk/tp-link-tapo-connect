@@ -36,7 +36,7 @@ export const cloudLogin = async (email: string = process.env.TAPO_USERNAME || un
   const loginRequest = {
     "method": "login",
     "params": {
-      "appType": "Tapo_Android",
+      "appType": "Tapo_Ios",
       "cloudPassword": password,
       "cloudUserName": email,
       "terminalUUID": uuidv4()
