@@ -41,12 +41,12 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
     }
 
     return {
-      
+
 
       turnOn: (deviceId?: string) => setDeviceOn(true, deviceId),
-      
+
       turnOff: (deviceId?: string) => setDeviceOn(false, deviceId),
-      
+
       setBrightness: async (brightnessLevel: number = 100) => {
         const setBrightnessRequest = {
           "method": "set_device_info",
@@ -56,10 +56,10 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
         }
         await send(setBrightnessRequest)
       },
-      
+
       setColour: async (colour: string = 'white') => {
         const params = getColour(colour);
-      
+
         const setColourRequest = {
           "method": "set_device_info",
           params
@@ -81,12 +81,13 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
           "params":{
             "hue": normalisedHue,
             "saturation": normalisedSat,
-            "brightness": normalisedLum
+            "brightness": normalisedLum,
+            "color_temp": 0
           }
         }
         await send(setHSLRequest)
       },
-      
+
       getDeviceInfo:async (): Promise<TapoDeviceInfo> => {
         const statusRequest = {
           "method": "get_device_info"
@@ -99,9 +100,9 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
           "method": "get_child_device_list",
           start_index: 0,
         }
-    
+
         const res = await send(listChildDeviceRequest)
-      
+
         return res.child_device_list.map((deviceInfo) => augmentTapoDeviceInfo(deviceInfo)).sort((a, b) => a.position - b.position)
       },
 
@@ -111,5 +112,5 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
         }
         return await send(statusRequest)
       }
-    }     
+    }
 }
