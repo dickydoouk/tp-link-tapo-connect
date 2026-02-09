@@ -1,10 +1,10 @@
 import { getColour } from "./colour-helper"
 import { base64Decode } from "./tplink-cipher"
-import { TapoDeviceInfo, TapoProtocol } from "./types"
+import { AlarmTone, AlarmVolume, TapoDeviceEventLogs, TapoDeviceInfo, TapoProtocol } from "./types"
 
 export const TapoDevice = ({ send }: TapoProtocol) => {
 
-  const wrapRequestForChildDevice = (request: any, deviceId: string | undefined) => {
+  const wrapRequestForChildDevice = (request: any, deviceId?: string | undefined) => {
     // No child means no need to wrap
     if  (!deviceId) return request
 
@@ -22,7 +22,7 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
     }
   }
 
-    const setDeviceOn = async (deviceOn: boolean, deviceId: string | undefined) => {
+    const setDeviceOn = async (deviceOn: boolean, deviceId?: string | undefined) => {
         const turnDeviceOnRequest = {
           "method": "set_device_info",
           "params":{
@@ -73,7 +73,7 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
         const normalisedLum = Math.max(0, Math.min(100, lum));
 
         if(normalisedLum === 0) {
-          await setDeviceOn(false, undefined)
+          await setDeviceOn(false)
         }
 
         const setHSLRequest = {
@@ -110,6 +110,57 @@ export const TapoDevice = ({ send }: TapoProtocol) => {
           "method": "get_energy_usage"
         }
         return await send(statusRequest)
+      },
+
+      // HS100 - Tapo Hub
+      getHubDevices:async (): Promise<TapoDeviceInfo> => {
+        const statusRequest = {
+          "method": "get_child_device_list",
+        }
+        return await send(statusRequest)
+      },
+
+      playAlarm: async (alarmType = AlarmTone.Alarm1, volume = AlarmVolume.high, alarm_duration = 0): Promise<TapoDeviceInfo> => {
+        const statusRequest = {
+          "method": "play_alarm",
+          "params":{
+            "alarm_duration": alarm_duration,
+            "alarm_volume": volume,
+            "alarm_type": alarmType
+          }
+        }
+        return await send(statusRequest)
+      },
+
+      stopAlarm: async (): Promise<TapoDeviceInfo> => {
+        const statusRequest = {
+          "method": "stop_alarm"
+        }
+        return await send(statusRequest)
+      },
+
+      getEventLogs: async (deviceId: String, size = 20, startId = 0): Promise<TapoDeviceEventLogs> => {
+        const eventLogsRequest = {
+          "method": "control_child",
+          "params": {
+            "device_id": deviceId,
+            "requestData": {
+              "method": "get_trigger_logs",
+              "params": {
+                "page_size": size,
+                "start_id": startId
+              }
+            }
+          }
+        }
+        return await send(eventLogsRequest)
+      },
+
+      getAlarmTones: async (): Promise<TapoDeviceInfo> => {
+        const alarmInfoRequest = {
+          "method": "get_support_alarm_type_list"
+        }
+        return await send(alarmInfoRequest)
       }
     }     
 }
