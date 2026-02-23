@@ -5,7 +5,7 @@ const email = "<TP LINK ACCOUNT EMAIL>";
 const password = "<TP LINK ACCOUNT PASSWORD>";
 const deviceIp = "192.168.0.62";
 
-test("Login using ENV Vars & list devices", async () => {
+xtest("Login using ENV Vars & list devices", async () => {
   const cloudApi = await cloudLogin(email, password);
 
   const devices = await cloudApi.listDevices();
