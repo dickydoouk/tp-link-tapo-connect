@@ -62,7 +62,8 @@ const handshake = async (deviceIp: string): Promise<TapoDeviceKey> => {
     setCookieHeader.indexOf(";"),
   );
 
-  const deviceKey = readDeviceKey(response.data.result.key, keyPair.privateKey);
+  // @ts-ignore
+  const deviceKey = await readDeviceKey(response.data.result.key, keyPair.privateKey);
 
   return {
     key: deviceKey.subarray(0, 16),

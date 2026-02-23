@@ -1,4 +1,4 @@
-import crypto, { KeyObject } from "crypto";
+import crypto, { KeyLike, KeyObject } from "crypto";
 import util from "util";
 import type { TapoDeviceKey } from "./types";
 
@@ -21,7 +21,8 @@ export const generateKeyPair = async () => {
     },
   };
   const generateKeyPair = util.promisify(crypto.generateKeyPair);
-  return generateKeyPair(RSA_CIPHER_ALGORITHM, RSA_OPTIONS);
+  // @ts-ignore
+  return await generateKeyPair(RSA_CIPHER_ALGORITHM, RSA_OPTIONS);
 };
 
 export const encrypt = (data: any, deviceKey: TapoDeviceKey): string => {
@@ -46,7 +47,7 @@ export const decrypt = (data: string, deviceKey: TapoDeviceKey): any => {
 
 export const readDeviceKey = (
   pemKey: string,
-  privateKey: KeyObject,
+  privateKey: KeyLike,
 ): Buffer => {
   const keyBytes = Buffer.from(pemKey, "base64");
   const deviceKey = crypto.privateDecrypt(
