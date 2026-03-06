@@ -1,16 +1,18 @@
-import { base64Decode } from "./tplink-cipher"
-import { TapoDevice } from "./types"
+import { base64Decode } from "./tplink-cipher";
+import { TapoDevice } from "./types";
 
-export const augmentTapoDevice = async (deviceInfo: TapoDevice): Promise<TapoDevice> => {
-    if (isTapoDevice(deviceInfo.deviceType)) {
-      return {
-        ...deviceInfo,
-        alias: base64Decode(deviceInfo.alias)
-      }
-    } else {
-      return deviceInfo
-    }
+export const augmentTapoDevice = async (
+  deviceInfo: TapoDevice,
+): Promise<TapoDevice> => {
+  if (isTapoDevice(deviceInfo.deviceType)) {
+    return {
+      ...deviceInfo,
+      alias: base64Decode(deviceInfo.alias),
+    };
+  } else {
+    return deviceInfo;
   }
+};
   
   export const isTapoDevice = (deviceType: string) => {
     switch (deviceType) {
